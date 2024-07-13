@@ -6,11 +6,11 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-public class BookQueries {
-    public  String getData(){
+public class APIQueries {
+    public  String getData(String url){
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://foo.com/"))
+                .uri(URI.create(url))
                 .build();
         HttpResponse<String> response;
         {
