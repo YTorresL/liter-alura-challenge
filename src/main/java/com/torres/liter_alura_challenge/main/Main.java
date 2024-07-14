@@ -1,6 +1,9 @@
 package com.torres.liter_alura_challenge.main;
 
+import com.torres.liter_alura_challenge.model.BookData;
+import com.torres.liter_alura_challenge.model.ResultsData;
 import com.torres.liter_alura_challenge.service.APIQueries;
+import com.torres.liter_alura_challenge.service.DataConversor;
 
 import java.util.Scanner;
 
@@ -8,6 +11,7 @@ public class Main {
     private Scanner keyboard = new Scanner(System.in);
     private APIQueries apiQueries = new APIQueries();
     private final String BASE_URL = "https://gutendex.com/books/?search=";
+    private DataConversor conversor = new DataConversor();
 
     public void menu() {
             var start = true;
@@ -48,7 +52,20 @@ public class Main {
         var title = keyboard.next();
         var url = BASE_URL + title.replace(" ", "%20");
         var json = apiQueries.getData(url);
-        System.out.println(json);
+        ResultsData resultsData = conversor.getData(json, ResultsData.class);
+        System.out.println("""
+                
+                ------------ Book -------------
+                """);
+        System.out.println(
+                resultsData.books().stream().map(
+                book -> "Title: " + book.title() + "\n"
+                        + "Authors: " + book.authors().stream().map(author -> author.name())
+                        .findFirst().orElse("Author not found") + "\n"
+                        + "Languages: " + book.languages().stream()
+                        .findFirst().orElse("Language not found") + "\n"
+                        + "Download count: " + book.downloadCount())
+                        .findFirst().orElse("Book not found") + "\n");
     }
 
     private void listBooks() {
