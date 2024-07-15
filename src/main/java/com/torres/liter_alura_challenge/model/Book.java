@@ -75,4 +75,7 @@ public class Book {
                 "Author= " + author.getName() + '\n';
     }
 
+    public void addAuthor(Author author) {
+        author.getBooks().add(this);
+    }
 }

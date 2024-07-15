@@ -66,17 +66,17 @@ public class Main {
         ResultsData resultsData = conversor.getData(json, ResultsData.class);
 
         var bookData = resultsData.books().get(0);
-
-        // Crear y guardar el autor primero
-        Author authorDB = new Author(bookData.authors().get(0));
-        authorRepository.save(authorDB);
-
-        // Crear el libro y asociar el autor guardado
         Book bookDB = new Book(bookData);
-        bookDB.setAuthor(authorDB);
 
+        Author authorDB = authorRepository.findByName(bookData.authors().get(0).name());
 
-        // Guardar el libro
+        if (authorDB != null) {
+            bookDB.setAuthor(authorDB);
+            bookDB.addAuthor(authorDB);
+        } else {
+            authorRepository.save(authorDB);
+        }
+
         bookRepository.save(bookDB);
 
         System.out.println("""
@@ -97,11 +97,25 @@ public class Main {
     private void listBooks() {
         List<Book> books = bookRepository.findAll();
         books.forEach(System.out::println);
+
+        if (bookRepository.findAll().isEmpty()) {
+            System.out.println("""
+    
+        No books found
+        """);
+        }
     }
 
     private void listAuthors() {
         List<Author> authors = authorRepository.findAll();
         authors.forEach(System.out::println);
+
+        if (authorRepository.findAll().isEmpty()) {
+            System.out.println("""
+    
+        No authors found
+        """);
+        }
     }
 
     private void listBooksByLanguage() {
@@ -126,12 +140,41 @@ public class Main {
 
     private void english() {
         bookRepository.findByLanguages("en").forEach(System.out::println);
+
+        if (bookRepository.findByLanguages("en").isEmpty()) {
+            System.out.println("""
+    
+        No books found in this language
+        """);
+        }
     }
 
     private void spanish() {
         bookRepository.findByLanguages("es").forEach(System.out::println);
+
+        if (bookRepository.findByLanguages("es").isEmpty()) {
+            System.out.println("""
+    
+        No books found in this language
+        """);
+        }
+
     }
 
     private void listAuthorsinYears() {
+        System.out.println("""
+                -------------------------------
+                
+                Enter the year range:
+                """);
+        var option = keyboard.nextInt();
+        authorRepository.findByBirthYear(option).forEach(System.out::println);
+
+        if (authorRepository.findByBirthYear(option).isEmpty()) {
+            System.out.println("""
+        
+        No authors found in this year range
+        """);
+        }
     }
 }
