@@ -28,7 +28,7 @@ public class Main {
             var start = true;
             while (start) {
                 System.out.println("""
-                        -------------------------------
+                        ------------- BOOKS ------------
                         
                         1 - Search books
                         2 - List books registered
@@ -105,6 +105,31 @@ public class Main {
     }
 
     private void listBooksByLanguage() {
+        System.out.println("""
+                
+                ---------- LANGUAGE -----------
+                
+                1 - English
+                2 - Spanish
+                
+                -------------------------------
+                
+                Enter the language number:
+                """);
+        var option = keyboard.nextInt();
+        switch (option) {
+            case 1 -> english();
+            case 2 -> spanish();
+            default -> english();
+        };
+    }
+
+    private void english() {
+        bookRepository.findByLanguages("en").forEach(System.out::println);
+    }
+
+    private void spanish() {
+        bookRepository.findByLanguages("es").forEach(System.out::println);
     }
 
     private void listAuthorsinYears() {

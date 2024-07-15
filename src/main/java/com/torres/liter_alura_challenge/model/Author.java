@@ -74,6 +74,6 @@ public class Author {
         return '\n' + "Name= " + name + '\n' +
                 "BirthYear= " + birthYear + '\n' +
                 "DeathYear= " + deathYear + '\n' +
-                "books= " + books.stream().map(Book::getTitle).toList() + '\n';
+                "Books= " + books.stream().map(Book::getTitle).toList() + '\n';
     }
 }

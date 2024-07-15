@@ -25,12 +25,12 @@ public class Book {
         this.title = title;
     }
 
-    public String getLenguages() {
-        return lenguages;
+    public String getLanguages() {
+        return languages;
     }
 
-    public void setLenguages(String lenguages) {
-        this.lenguages = lenguages;
+    public void setLanguages(String languages) {
+        this.languages = languages;
     }
 
     public Integer getDownloadCount() {
@@ -47,7 +47,7 @@ public class Book {
 
     @Column(unique = true)
     private String title;
-    private String lenguages;
+    private String languages;
     private Integer downloadCount;
 
     @ManyToOne
@@ -58,7 +58,7 @@ public class Book {
 
     public Book(BookData bookData) {
         this.title = bookData.title();
-        this.lenguages = bookData.languages().toString();
+        this.languages = String.join(", ", bookData.languages());
         this.downloadCount = bookData.downloadCount();
         this.author = bookData.authors().stream().findFirst().map(Author::new).orElse(null);
     }
@@ -70,7 +70,7 @@ public class Book {
     @Override
     public String toString() {
         return '\n' + "Title= " + title + '\n' +
-                "Lenguages= " + lenguages + '\n' +
+                "Languages= " + languages + '\n' +
                 "DownloadCount= " + downloadCount + '\n' +
                 "Author= " + author.getName() + '\n';
     }
