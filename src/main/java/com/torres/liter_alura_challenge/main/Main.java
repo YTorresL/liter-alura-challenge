@@ -1,10 +1,14 @@
 package com.torres.liter_alura_challenge.main;
 
-import com.torres.liter_alura_challenge.model.BookData;
+import com.torres.liter_alura_challenge.model.Author;
+import com.torres.liter_alura_challenge.model.Book;
 import com.torres.liter_alura_challenge.model.ResultsData;
+import com.torres.liter_alura_challenge.repository.AuthorRepository;
+import com.torres.liter_alura_challenge.repository.BookRepository;
 import com.torres.liter_alura_challenge.service.APIQueries;
 import com.torres.liter_alura_challenge.service.DataConversor;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -12,6 +16,13 @@ public class Main {
     private APIQueries apiQueries = new APIQueries();
     private final String BASE_URL = "https://gutendex.com/books/?search=";
     private DataConversor conversor = new DataConversor();
+    private BookRepository bookRepository;
+    private AuthorRepository authorRepository;
+
+    public Main(BookRepository bookRepository, AuthorRepository authorRepository) {
+        this.bookRepository = bookRepository;
+        this.authorRepository = authorRepository;
+    }
 
     public void menu() {
             var start = true;
@@ -54,6 +65,20 @@ public class Main {
         var json = apiQueries.getData(url);
         ResultsData resultsData = conversor.getData(json, ResultsData.class);
 
+        var bookData = resultsData.books().get(0);
+
+        // Crear y guardar el autor primero
+        Author authorDB = new Author(bookData.authors().get(0));
+        authorRepository.save(authorDB);
+
+        // Crear el libro y asociar el autor guardado
+        Book bookDB = new Book(bookData);
+        bookDB.setAuthor(authorDB);
+
+
+        // Guardar el libro
+        bookRepository.save(bookDB);
+
         System.out.println("""
                 
                 ------------ Book -------------
@@ -70,9 +95,13 @@ public class Main {
     }
 
     private void listBooks() {
+        List<Book> books = bookRepository.findAll();
+        books.forEach(System.out::println);
     }
 
     private void listAuthors() {
+        List<Author> authors = authorRepository.findAll();
+        authors.forEach(System.out::println);
     }
 
     private void listBooksByLanguage() {
